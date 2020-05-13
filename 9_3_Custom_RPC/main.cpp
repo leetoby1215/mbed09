@@ -5,7 +5,6 @@
  *  This example demonstrates using RPC over serial
 **/
 RpcDigitalOut myled1(LED1,"myled1");
-RpcDigitalOut myled2(LED2,"myled2");
 RpcDigitalOut myled3(LED3,"myled3");
 Serial pc(USBTX, USBRX);
 void LEDControl(Arguments *in, Reply *out);
@@ -40,15 +39,22 @@ void LEDControl (Arguments *in, Reply *out)   {
     y = in->getArg<double>();
 
     // Have code here to call another RPC function to wake up specific led or close it.
-    char buffer[200], outbuf[256];
-    char strings[20];
-    int led = x;
-    int on = y;
-    int n = sprintf(strings, "/myled%d/write %d", led, on);
-    strcpy(buffer, strings);
-    RPC::call(buffer, outbuf);
+    char buffer_1[200];
+    char buffer_2[200];
+    char outbuf[256];
+    char strings_1[20];
+    char strings_2[20];
+    int red = x;
+    int blue = y;
+    int n = sprintf(strings_1, "/myled1/write %d", red);
+    strcpy(buffer_1, strings_1);
+    RPC::call(buffer_1, outbuf);
+    int m = sprintf(strings_2, "/myled3/write %d", blue);
+    strcpy(buffer_2, strings_2);
+    RPC::call(buffer_2, outbuf);
     if (success) {
-        out->putData(buffer);
+        out->putData(buffer_1);
+        out->putData(buffer_2);
     } else {
         out->putData("Failed to execute LED control.");
     }
